@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  .calculator-container {
+    background: linear-gradient(to bottom, #007bff, #4da6ff);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+    color: white;
+  }
+
+  .calculator h2 {
+    margin-top: 0;
+    color: white;
+  }
+
+  .section {
+    margin-bottom: 20px;
+  }
+
+  select, input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+
+  .half-width {
+    width: calc(50% - 5px);
+  }
+
+  .quarter-width {
+    width: calc(25% - 5px);
+  }
+
+  #result {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #0056b3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #003d80;
+  }
+
+  .section h3 {
+    margin: 0;
+    color: #ddd;
+  }
+
+  .section select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 10px;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+  }
+</style>
+<title>Calculadora de Infraestrutura</title>
+</head>
+<body>
+<div class="calculator-container">
+  <h1>Calculadora de Infraestrutura</h1>
+
+  <div class="calculator">
+    <div class="section software">
+      <h3>Software</h3>
+      <select id="softwareType">
+        <option value="software1">Software 1</option>
+        <option value="software2">Software 2</option>
+        <option value="software3">Software 3</option>
+        <option value="software4">Software 4</option>
+      </select>
+      <input type="number" id="softwareQuantity" placeholder="Qtd" class="quarter-width">
+    </div>
+
+    <div class="section server">
+      <h3>Servidor</h3>
+      <select id="serverType">
+        <option value="server1">Servidor 1</option>
+        <option value="server2">Servidor 2</option>
+        <option value="server3">Servidor 3</option>
+        <option value="server4">Servidor 4</option>
+        <option value="server5">Servidor 5</option>
+      </select>
+      <input type="number" id="serverQuantity" placeholder="Qtd" class="quarter-width">
+    </div>
+
+    <div class="section volumetria">
+      <h3>Volumetria</h3>
+      <input type="number" id="totalVolumetria" placeholder="Total Volumetria (GB)" class="half-width">
+      <input type="number" id="totalStorage" placeholder="Total Storage (GB)" class="half-width">
+    </div>
+
+    <button id="calculateButton">Calcular</button>
+
+    <div id="result">Custo Total: $0</div>
+  </div>
+</div>
+
+<script>
+  const softwareType = document.getElementById('softwareType');
+  const softwareQuantity = document.getElementById('softwareQuantity');
+  const serverType = document.getElementById('serverType');
+  const serverQuantity = document.getElementById('serverQuantity');
+  const totalVolumetria = document.getElementById('totalVolumetria');
+  const totalStorage = document.getElementById('totalStorage');
+  const result = document.getElementById('result');
+
+  [softwareType, softwareQuantity, serverType, serverQuantity, totalVolumetria, totalStorage].forEach(element => {
+    element.addEventListener('input', updateTotal);
+  });
+
+  function updateTotal() {
+    const softwareCost = calculateCost(softwareType.value, softwareQuantity.value);
+    const serverCost = calculateCost(serverType.value, serverQuantity.value);
+    const volumetriaValue = totalVolumetria.value ? parseInt(totalVolumetria.value) : 0;
+    const storageValue = totalStorage.value ? parseInt(totalStorage.value) : 0;
+    const storageCost = (volumetriaValue + storageValue) * 0.05;
+
+    const totalCost = softwareCost + serverCost + storageCost;
+    result.textContent = `Custo Total: $${totalCost.toFixed(2)}`;
+  }
+
+  function calculateCost(type, quantity) {
+    const costs = {
+      software1: 10,
+      software2: 15,
+      software3: 20,
+      software4: 25,
+      server1: 100,
+      server2: 150,
+      server3: 200,
+      server4: 250,
+      server5: 300
+    };
+
+    return costs[type] * (quantity ? parseInt(quantity) : 0);
+  }
+</script>
+</body>
+</html>

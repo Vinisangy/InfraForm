@@ -1,37 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Formulário de Infraestrutura</title>
-  <link rel="stylesheet" type="text/css" href="styles.css">
+	<title>Exemplo de Formulário</title>
+  
+	<title>Meu Formulário</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="script.js">
+
 </head>
 <body>
-  <h1>Formulário de Infraestrutura</h1>
+	<div class="form-wrapper">
+		<h1>Projeto</h1>
+		<form>
+			<div class="form-group">
+				<label for="nome">Nome do Projeto:</label>
+				<input type="text" id="nome" name="nome" required>
+			</div>
 
-  <form id="infraForm">
-    <label for="nomeProjeto">Nome do Projeto:</label>
-    <input type="text" id="nomeProjeto" required>
+			<div class="form-group">
+				<label for="nome2">Lider do Projeto:</label>
+				<input type="text" id="nome2" name="nome2" required>
+			</div>
 
-    <label for="localizacao">Localização:</label>
-    <input type="text" id="localizacao" required>
+			<div class="form-group">
+				<label for="status">Status:</label>
+				<input type="text" id="status" name="status" required>
+			</div>
 
-    <label for="descricao">Descrição da Infraestrutura:</label>
-    <textarea id="descricao" required></textarea>
+			<div class="form-group">
+				<label for="dono">Dono:</label>
+				<input type="text" id="dono" name="dono" required>
+			</div>
 
-    <label for="condicao">Condição e Estado de Conservação:</label>
-    <textarea id="condicao" required></textarea>
+			<div class="form-group">
+				<label for="dono2">Dono2:</label>
+				<input type="text" id="dono2" name="dono2" required>
+			</div>
 
-    <label for="capacidade">Capacidade e Dimensionamento:</label>
-    <textarea id="capacidade" required></textarea>
+			<div class="form-group">
+				<label for="dono3">Dono3:</label>
+				<input type="text" id="dono3" name="dono3" required>
+			</div>
 
-    <label for="necessidades">Necessidades e Melhorias:</label>
-    <textarea id="necessidades" required></textarea>
+			<div class="form-group">
+				<label for="infra">Tipo de infra:</label>
+					<input type="radio" id="cloud" name="infra" value="cloud" onchange="showTipoInfra()">
+					<label for="cloud">Cloud</label>
+					<input type="radio" id="onpremisses" name="infra" value="onpremisses" onchange="showTipoInfra()">
+					<label for="onpremisses">On-Premisses</label>
+			</div>
+			<div id="camposOpcao1" class="campos-adicionais">
+				<div class="form-group">
+				  <label for="multiselect">Selecione:</label>
+				  <select multiple id="multiselect" name="multiselect">
+					<option value="saas">saas</option>
+					<option value="paas">paas</option>
+				  </select>
+				</div>
+			  </div>
+			<div class="form-group">
+				<label for="mensagem">Descreva: </label>
+				<textarea id="mensagem" name="mensagem" required></textarea>
+			</div>
 
-    <label for="consideracoes">Considerações Ambientais e de Segurança:</label>
-    <textarea id="consideracoes" required></textarea>
-
-    <button type="submit">Enviar</button>
-  </form>
-
-  <script src="script.js"></script>
+			<input id="enviar" type="submit" value="Enviar">
+		</form>
+	</div>
 </body>
 </html>
+

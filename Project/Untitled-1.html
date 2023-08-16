@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Infraestrutura</title>
+  <style>
+    /* Estilos CSS para o formulário */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    #resultado {
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Calculadora de Infraestrutura</h1>
+  <form>
+    <label for="num_servidores">Número de Servidores:</label>
+    <input type="number" id="num_servidores" min="0" oninput="calcularCusto()">
+
+    <label for="num_switches">Número de Switches:</label>
+    <input type="number" id="num_switches" min="0" oninput="calcularCusto()">
+
+    <label for="num_roteadores">Número de Roteadores:</label>
+    <input type="number" id="num_roteadores" min="0" oninput="calcularCusto()">
+
+    <label for="num_firewalls">Número de Firewalls:</label>
+    <input type="number" id="num_firewalls" min="0" oninput="calcularCusto()">
+
+    <label for="volumetria">Volumetria de Armazenamento (TB):</label>
+    <input type="number" id="volumetria" min="0" oninput="calcularCusto()">
+
+    <label for="software">Software:</label>
+    <select id="software" onchange="calcularCusto()">
+      <option value="0">Selecione um software</option>
+      <option value="100">Software A - R$100</option>
+      <option value="200">Software B - R$200</option>
+      <option value="150">Software C - R$150</option>
+      <option value="300">Software D - R$300</option>
+    </select>
+
+    <label for="quantidade_software">Quantidade do Software:</label>
+    <input type="number" id="quantidade_software" min="0" oninput="calcularCusto()">
+  </form>
+
+  <h2>Resultado:</h2>
+  <div id="resultado">R$ 0,00</div>
+
+  <script>
+    function calcularCusto() {
+      // Obter os valores preenchidos nos campos
+      const numServidores = parseInt(document.getElementById('num_servidores').value) || 0;
+      const numSwitches = parseInt(document.getElementById('num_switches').value) || 0;
+      const numRoteadores = parseInt(document.getElementById('num_roteadores').value) || 0;
+      const numFirewalls = parseInt(document.getElementById('num_firewalls').value) || 0;
+      const volumetria = parseInt(document.getElementById('volumetria').value) || 0;
+      const softwareSelect = document.getElementById('software');
+      const softwareValue = parseInt(softwareSelect.options[softwareSelect.selectedIndex].value) || 0;
+      const quantidadeSoftware = parseInt(document.getElementById('quantidade_software').value) || 0;
+
+      // Cálculo do custo total
+      const custoTotal = (numServidores * 1000) + (numSwitches * 500) +
+                         (numRoteadores * 800) + (numFirewalls * 600) +
+                         (volumetria * 50) + (softwareValue * quantidadeSoftware);
+
+      // Exibir o resultado formatado
+      const resultadoElement = document.getElementById('resultado');
+      resultadoElement.textContent = `R$ ${custoTotal.toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>
