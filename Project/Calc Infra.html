@@ -132,6 +132,23 @@
 </div>
 
 <script>
+  // Definição das matrizes com informações sobre os tipos e custos
+  const softwareTypes = [
+    { type: 'software1', cost: 10 },
+    { type: 'software2', cost: 15 },
+    { type: 'software3', cost: 20 },
+    { type: 'software4', cost: 25 }
+  ];
+
+  const serverTypes = [
+    { type: 'server1', cost: 100 },
+    { type: 'server2', cost: 150 },
+    { type: 'server3', cost: 200 },
+    { type: 'server4', cost: 250 },
+    { type: 'server5', cost: 300 }
+  ];
+
+  // Obtém referências aos elementos do HTML
   const softwareType = document.getElementById('softwareType');
   const softwareQuantity = document.getElementById('softwareQuantity');
   const serverType = document.getElementById('serverType');
@@ -140,13 +157,15 @@
   const totalStorage = document.getElementById('totalStorage');
   const result = document.getElementById('result');
 
+  // Adiciona um ouvinte de evento 'input' para cada elemento
   [softwareType, softwareQuantity, serverType, serverQuantity, totalVolumetria, totalStorage].forEach(element => {
     element.addEventListener('input', updateTotal);
   });
 
+  // Função para atualizar o custo total
   function updateTotal() {
-    const softwareCost = calculateCost(softwareType.value, softwareQuantity.value);
-    const serverCost = calculateCost(serverType.value, serverQuantity.value);
+    const softwareCost = calculateCost(softwareType.value, softwareQuantity.value, softwareTypes);
+    const serverCost = calculateCost(serverType.value, serverQuantity.value, serverTypes);
     const volumetriaValue = totalVolumetria.value ? parseInt(totalVolumetria.value) : 0;
     const storageValue = totalStorage.value ? parseInt(totalStorage.value) : 0;
     const storageCost = (volumetriaValue + storageValue) * 0.05;
@@ -155,21 +174,15 @@
     result.textContent = `Custo Total: $${totalCost.toFixed(2)}`;
   }
 
-  function calculateCost(type, quantity) {
-    const costs = {
-      software1: 10,
-      software2: 15,
-      software3: 20,
-      software4: 25,
-      server1: 100,
-      server2: 150,
-      server3: 200,
-      server4: 250,
-      server5: 300
-    };
+  // Função para calcular o custo com base no tipo, quantidade e matriz de informações
+  function calculateCost(type, quantity, costArray) {
+    const selectedType = costArray.find(item => item.type === type);
+    const selectedQuantity = quantity ? parseInt(quantity) : 0;
 
-    return costs[type] * (quantity ? parseInt(quantity) : 0);
+    return selectedType ? selectedType.cost * selectedQuantity : 0;
   }
 </script>
+
+
 </body>
 </html>
