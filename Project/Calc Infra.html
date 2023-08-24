@@ -20,7 +20,7 @@
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 400px;
-    text-align: center;
+    text-align: left; /* Ajuste o alinhamento para a esquerda */
     color: white;
   }
 
@@ -33,7 +33,13 @@
     margin-bottom: 20px;
   }
 
-  select, input[type="number"] {
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ddd;
+  }
+
+  select, .quarter-width {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;
@@ -43,11 +49,11 @@
   }
 
   .half-width {
-    width: calc(50% - 5px);
-  }
-
-  .quarter-width {
-    width: calc(25% - 5px);
+    width: calc(30% - 5px);
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
   }
 
   #result {
@@ -56,38 +62,6 @@
     margin-top: 10px;
   }
 
-  button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: #0056b3;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  button:hover {
-    background-color: #003d80;
-  }
-
-  .section h3 {
-    margin: 0;
-    color: #ddd;
-  }
-
-  .section select {
-    appearance: none;
-    -webkit-appearance: none;
-    padding: 10px;
-    background-color: #f8f8f8;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    width: 100%;
-  }
 </style>
 <title>Calculadora de Infraestrutura</title>
 </head>
@@ -104,7 +78,7 @@
         <option value="software3">Software 3</option>
         <option value="software4">Software 4</option>
       </select>
-      <input type="number" id="softwareQuantity" placeholder="Qtd" class="quarter-width">
+      <input type="number" id="softwareQuantity" placeholder="Qtd" class="half-width">
     </div>
 
     <div class="section server">
@@ -116,36 +90,36 @@
         <option value="server4">Servidor 4</option>
         <option value="server5">Servidor 5</option>
       </select>
-      <input type="number" id="serverQuantity" placeholder="Qtd" class="quarter-width">
+      <input type="number" id="serverQuantity" placeholder="Qtd" class="half-width">
     </div>
 
     <div class="section volumetria">
       <h3>Volumetria</h3>
-      <input type="number" id="totalVolumetria" placeholder="Total Volumetria (GB)" class="half-width">
-      <input type="number" id="totalStorage" placeholder="Total Storage (GB)" class="half-width">
+      <input type="number" id="totalVolumetria" placeholder="Total Volumetria (GB)" class="quarter-width">
+      <input type="number" id="totalStorage" placeholder="Total Storage (GB)" class="quarter-width">
     </div>
 
-    <button id="calculateButton">Calcular</button>
-
     <div id="result">Custo Total: $0</div>
+    <div id="capexResult">Capex: $0</div>
+    <div id="opexResult">Opex: $0</div>
   </div>
 </div>
 
 <script>
   // Definição das matrizes com informações sobre os tipos e custos
   const softwareTypes = [
-    { type: 'software1', cost: 10 },
-    { type: 'software2', cost: 15 },
-    { type: 'software3', cost: 20 },
-    { type: 'software4', cost: 25 }
+    { type: 'software1', cost: 10, opex: 3 },
+    { type: 'software2', cost: 15, opex: 2 },
+    { type: 'software3', cost: 20, opex: 4 },
+    { type: 'software4', cost: 25, opex: 6 }
   ];
 
   const serverTypes = [
-    { type: 'server1', cost: 100 },
-    { type: 'server2', cost: 150 },
-    { type: 'server3', cost: 200 },
-    { type: 'server4', cost: 250 },
-    { type: 'server5', cost: 300 }
+    { type: 'server1', cost: 100, opex: 2 },
+    { type: 'server2', cost: 150, opex: 3 },
+    { type: 'server3', cost: 200, opex: 4 },
+    { type: 'server4', cost: 250, opex: 5 },
+    { type: 'server5', cost: 300, opex: 7 }
   ];
 
   // Obtém referências aos elementos do HTML
@@ -164,23 +138,30 @@
 
   // Função para atualizar o custo total
   function updateTotal() {
-    const softwareCost = calculateCost(softwareType.value, softwareQuantity.value, softwareTypes);
-    const serverCost = calculateCost(serverType.value, serverQuantity.value, serverTypes);
-    const volumetriaValue = totalVolumetria.value ? parseInt(totalVolumetria.value) : 0;
-    const storageValue = totalStorage.value ? parseInt(totalStorage.value) : 0;
-    const storageCost = (volumetriaValue + storageValue) * 0.05;
+  const softwareCost = calculateCost(softwareType.value, softwareQuantity.value, softwareTypes);
+  const serverCost = calculateCost(serverType.value, serverQuantity.value, serverTypes);
+  const volumetriaValue = totalVolumetria.value ? parseInt(totalVolumetria.value) : 0;
+  const storageValue = totalStorage.value ? parseInt(totalStorage.value) : 0;
+  const storageCost = (volumetriaValue + storageValue) * 0.05;
 
-    const totalCost = softwareCost + serverCost + storageCost;
-    result.textContent = `Custo Total: $${totalCost.toFixed(2)}`;
-  }
+  const totalCapex = softwareCost.capex + serverCost.capex + storageCost;
+  const totalOpex = softwareCost.opex + serverCost.opex;
+
+  result.textContent = `Custo Total: $${totalCapex.toFixed(2)}`;
+  capexResult.textContent = `Capex: $${totalCapex.toFixed(2)}`;
+  opexResult.textContent = `Opex: $${totalOpex.toFixed(2)}`;
+}
 
   // Função para calcular o custo com base no tipo, quantidade e matriz de informações
   function calculateCost(type, quantity, costArray) {
-    const selectedType = costArray.find(item => item.type === type);
-    const selectedQuantity = quantity ? parseInt(quantity) : 0;
+  const selectedType = costArray.find(item => item.type === type);
+  const selectedQuantity = quantity ? parseInt(quantity) : 0;
 
-    return selectedType ? selectedType.cost * selectedQuantity : 0;
-  }
+  const capexCost = selectedType ? selectedType.cost * selectedQuantity : 0;
+  const opexCost = selectedType ? selectedType.opex * selectedQuantity : 0;
+
+  return { capex: capexCost, opex: opexCost };
+}
 </script>
 
 
