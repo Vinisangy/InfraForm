@@ -15,7 +15,7 @@
   }
 
   .calculator-container {
-    background: linear-gradient(to bottom, #007bff, #4da6ff);
+    background: linear-gradient(to bottom, #87CEFA, #4da6ff);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -39,7 +39,7 @@
     color: #ddd;
   }
 
-  select, .quarter-width {
+  select {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;
@@ -56,12 +56,20 @@
     border-radius: 4px;
   }
 
+  .quarter-width {
+    width: 80%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+
   #result {
     font-size: 18px;
     font-weight: bold;
     margin-top: 10px;
   }
-
 </style>
 <title>Calculadora de Infraestrutura</title>
 </head>
@@ -70,35 +78,47 @@
   <h1>Calculadora de Infraestrutura</h1>
 
   <div class="calculator">
+    <!-- Seção Software -->
     <div class="section software">
       <h3>Software</h3>
-      <select id="softwareType">
+      <select class="software-type">
         <option value="software1">Software 1</option>
         <option value="software2">Software 2</option>
         <option value="software3">Software 3</option>
         <option value="software4">Software 4</option>
       </select>
-      <input type="number" id="softwareQuantity" placeholder="Qtd" class="half-width">
+      <input type="number" class="software-quantity" placeholder="Qtd" class="half-width">
+      <button class="add-button" data-type="software">+</button>
     </div>
 
+    <!-- Contêiner para Seções de Software Adicionais -->
+    <div class="software-container"></div>
+
+    <!-- Seção Servidor -->
     <div class="section server">
       <h3>Servidor</h3>
-      <select id="serverType">
+      <select class="server-type">
         <option value="server1">Servidor 1</option>
         <option value="server2">Servidor 2</option>
         <option value="server3">Servidor 3</option>
         <option value="server4">Servidor 4</option>
         <option value="server5">Servidor 5</option>
       </select>
-      <input type="number" id="serverQuantity" placeholder="Qtd" class="half-width">
+      <input type="number" class="server-quantity" placeholder="Qtd" class="half-width">
+      <button class="add-button" data-type="server">+</button>
     </div>
 
+    <!-- Contêiner para Seções de Servidor Adicionais -->
+    <div class="server-container"></div>
+
+    <!-- Seção Volumetria -->
     <div class="section volumetria">
       <h3>Volumetria</h3>
       <input type="number" id="totalVolumetria" placeholder="Total Volumetria (GB)" class="quarter-width">
       <input type="number" id="totalStorage" placeholder="Total Storage (GB)" class="quarter-width">
     </div>
 
+    <!-- Resultados -->
     <div id="result">Custo Total: $0</div>
     <div id="capexResult">Capex: $0</div>
     <div id="opexResult">Opex: $0</div>
@@ -122,48 +142,131 @@
     { type: 'server5', cost: 300, opex: 7 }
   ];
 
-  // Obtém referências aos elementos do HTML
-  const softwareType = document.getElementById('softwareType');
-  const softwareQuantity = document.getElementById('softwareQuantity');
-  const serverType = document.getElementById('serverType');
-  const serverQuantity = document.getElementById('serverQuantity');
-  const totalVolumetria = document.getElementById('totalVolumetria');
-  const totalStorage = document.getElementById('totalStorage');
-  const result = document.getElementById('result');
+  // Obtém referências aos elementos do HTML para os contêineres de software e servidor
+  const softwareContainer = document.querySelector('.software-container');
+  const serverContainer = document.querySelector('.server-container');
 
-  // Adiciona um ouvinte de evento 'input' para cada elemento
-  [softwareType, softwareQuantity, serverType, serverQuantity, totalVolumetria, totalStorage].forEach(element => {
-    element.addEventListener('input', updateTotal);
+  // Adiciona um ou
+  // Adiciona um ouvinte de evento 'click' para os botões de adição
+  const addButtonSoftware = document.querySelector('.add-button[data-type="software"]');
+  const addButtonServer = document.querySelector('.add-button[data-type="server"]');
+
+  addButtonSoftware.addEventListener('click', () => {
+    addSection('software');
   });
+
+  addButtonServer.addEventListener('click', () => {
+    addSection('server');
+  });
+
+  // Função para adicionar uma nova seção (software ou servidor)
+  function addSection(type) {
+    const newSection = document.createElement('div');
+    newSection.classList.add('section', type);
+
+    const titleLabel = document.createElement('h3');
+    titleLabel.textContent = type === 'software' ? 'Software' : 'Servidor';
+    newSection.appendChild(titleLabel);
+
+    const typeSelect = document.createElement('select');
+    typeSelect.classList.add(`${type}-type`);
+    newSection.appendChild(typeSelect);
+
+    const quantityInput = document.createElement('input');
+    quantityInput.type = 'number';
+    quantityInput.placeholder = 'Qtd';
+    quantityInput.classList.add(`${type}-quantity`);
+    newSection.appendChild(quantityInput);
+
+    const addButton = document.createElement('button');
+    addButton.textContent = '+';
+    addButton.classList.add('add-button');
+    addButton.setAttribute('data-type', type);
+    addButton.addEventListener('click', () => {
+      addSection(type);
+    });
+    newSection.appendChild(addButton);
+
+    if (type === 'software') {
+      softwareTypes.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.type;
+        option.textContent = item.type;
+        typeSelect.appendChild(option);
+      });
+
+      // Adicione a nova seção de software ao contêiner de software
+      softwareContainer.appendChild(newSection);
+    } else if (type === 'server') {
+      serverTypes.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.type;
+        option.textContent = item.type;
+        typeSelect.appendChild(option);
+      });
+
+      // Adicione a nova seção de servidor ao contêiner de servidor
+      serverContainer.appendChild(newSection);
+    }
+
+    // Atualize os cálculos
+    updateTotal();
+  }
 
   // Função para atualizar o custo total
   function updateTotal() {
-  const softwareCost = calculateCost(softwareType.value, softwareQuantity.value, softwareTypes);
-  const serverCost = calculateCost(serverType.value, serverQuantity.value, serverTypes);
-  const volumetriaValue = totalVolumetria.value ? parseInt(totalVolumetria.value) : 0;
-  const storageValue = totalStorage.value ? parseInt(totalStorage.value) : 0;
-  const storageCost = (volumetriaValue + storageValue) * 0.05;
+    const softwareSections = document.querySelectorAll('.software');
+    const serverSections = document.querySelectorAll('.server');
+    const softwareCosts = [];
+    const serverCosts = [];
 
-  const totalCapex = softwareCost.capex + serverCost.capex + storageCost;
-  const totalOpex = softwareCost.opex + serverCost.opex;
+    softwareSections.forEach(section => {
+      const softwareType = section.querySelector('.software-type').value;
+      const softwareQuantity = section.querySelector('.software-quantity').value;
+      const cost = calculateCost(softwareType, softwareQuantity, softwareTypes);
+      softwareCosts.push(cost);
+    });
 
-  result.textContent = `Custo Total: $${totalCapex.toFixed(2)}`;
-  capexResult.textContent = `Capex: $${totalCapex.toFixed(2)}`;
-  opexResult.textContent = `Opex: $${totalOpex.toFixed(2)}`;
-}
+    serverSections.forEach(section => {
+      const serverType = section.querySelector('.server-type').value;
+      const serverQuantity = section.querySelector('.server-quantity').value;
+      const cost = calculateCost(serverType, serverQuantity, serverTypes);
+      serverCosts.push(cost);
+    });
+
+    const totalSoftwareCapex = softwareCosts.reduce((total, cost) => total + cost.capex, 0);
+    const totalSoftwareOpex = softwareCosts.reduce((total, cost) => total + cost.opex, 0);
+
+    const totalServerCapex = serverCosts.reduce((total, cost) => total + cost.capex, 0);
+    const totalServerOpex = serverCosts.reduce((total, cost) => total + cost.opex, 0);
+
+    const volumetriaValue = totalVolumetria.value ? parseInt(totalVolumetria.value) : 0;
+    const storageValue = totalStorage.value ? parseInt(totalStorage.value) : 0;
+    const storageCost = (volumetriaValue + storageValue) * 0.05;
+
+    const totalCapex = totalSoftwareCapex + totalServerCapex + storageCost;
+    const totalOpex = totalSoftwareOpex + totalServerOpex;
+
+    result.textContent = `Custo Total: $${totalCapex.toFixed(2)}`;
+    capexResult.textContent = `Capex: $${totalCapex.toFixed(2)}`;
+    opexResult.textContent = `Opex: $${totalOpex.toFixed(2)}`;
+  }
 
   // Função para calcular o custo com base no tipo, quantidade e matriz de informações
   function calculateCost(type, quantity, costArray) {
-  const selectedType = costArray.find(item => item.type === type);
-  const selectedQuantity = quantity ? parseInt(quantity) : 0;
+    const selectedType = costArray.find(item => item.type === type);
+    const selectedQuantity = quantity ? parseInt(quantity) : 0;
 
-  const capexCost = selectedType ? selectedType.cost * selectedQuantity : 0;
-  const opexCost = selectedType ? selectedType.opex * selectedQuantity : 0;
+    const capexCost = selectedType ? selectedType.cost * selectedQuantity : 0;
+    const opexCost = selectedType ? selectedType.opex * selectedQuantity : 0;
 
-  return { capex: capexCost, opex: opexCost };
-}
+    return { capex: capexCost, opex: opexCost };
+  }
+
+  // Adicione uma seção inicial de software e servidor
+  addSection('software');
+  addSection('server');
 </script>
-
 
 </body>
 </html>

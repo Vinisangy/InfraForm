@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+	body {
+	  font-family: Arial, sans-serif;
+	  background-color: #f4f4f4;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	  min-height: 100vh;
+	  margin: 0;
+	}
+  
+	.calculator-container {
+	  background: linear-gradient(to bottom, #87CEFA, #4da6ff);
+	  border-radius: 10px;
+	  padding: 20px;
+	  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	  width: 400px;
+	  text-align: left; /* Ajuste o alinhamento para a esquerda */
+	  color: white;
+	}
+  
+	.calculator h2 {
+	  margin-top: 0;
+	  color: white;
+	}
+  
+	.section {
+	  margin-bottom: 20px;
+	}
+  
+	label {
+	  display: block;
+	  margin-bottom: 5px;
+	  color: #ddd;
+	}
+  
+	select {
+	  width: 100%;
+	  padding: 8px;
+	  margin-bottom: 10px;
+	  border: 1px solid #ccc;
+	  border-radius: 4px;
+	  font-size: 16px;
+	}
+  
+	.half-width {
+	  width: calc(30% - 5px);
+	  padding: 5px;
+	  margin-bottom: 10px;
+	  border: 1px solid #ccc;
+	  border-radius: 4px;
+	}
+  
+	.quarter-width {
+	  width: 80%;
+	  padding: 8px;
+	  margin-bottom: 10px;
+	  border: 1px solid #ccc;
+	  border-radius: 4px;
+	  font-size: 16px;
+	}
+  
+	#result {
+	  font-size: 18px;
+	  font-weight: bold;
+	  margin-top: 10px;
+	}
+  </style>
+<title>Calculadora de Infraestrutura</title>
+</head>
+<body>
+<div class="calculator-container">
+  <h1>Calculadora de Infraestrutura</h1>
+
+  <div class="calculator">
+    <div class="section software">
+      <h3>Software</h3>
+      <select id="softwareType1">
+        <option value="software1">Software 1</option>
+        <option value="software2">Software 2</option>
+        <option value="software3">Software 3</option>
+        <option value="software4">Software 4</option>
+      </select>
+      <input type="number" id="softwareQuantity1" placeholder="Qtd" class="half-width">
+    </div>
+
+    <div class="section server">
+      <h3>Servidor</h3>
+      <select id="serverType">
+        <option value="server1">Servidor 1</option>
+        <option value="server2">Servidor 2</option>
+        <option value="server3">Servidor 3</option>
+        <option value="server4">Servidor 4</option>
+        <option value="server5">Servidor 5</option>
+      </select>
+      <input type="number" id="serverQuantity" placeholder="Qtd" class="half-width">
+    </div>
+
+    <div class="section volumetria">
+      <h3>Volumetria</h3>
+      <input type="number" id="totalVolumetria" placeholder="Total Volumetria (GB)" class="quarter-width">
+      <input type="number" id="totalStorage" placeholder="Total Storage (GB)" class="quarter-width">
+    </div>
+
+    <div id="result">Custo Total: $0</div>
+    <div id="capexResult">Capex: $0</div>
+    <div id="opexResult">Opex: $0</div>
+  </div>
+</div>
+
+<script>
+
+// Definição das matrizes com informações sobre os tipos e custos de software
+const softwareTypes = [
+  { type: 'software1', cost: 10, opex: 3 },
+  { type: 'software2', cost: 15, opex: 2 },
+  { type: 'software3', cost: 20, opex: 4 },
+  { type: 'software4', cost: 25, opex: 6 }
+];
+
+// Definição das matrizes com informações sobre os tipos e custos de servidor
+const serverTypes = [
+  { type: 'server1', cost: 100, opex: 2 },
+  { type: 'server2', cost: 150, opex: 3 },
+  { type: 'server3', cost: 200, opex: 4 },
+  { type: 'server4', cost: 250, opex: 5 },
+  { type: 'server5', cost: 300, opex: 7 }
+];
+
+// Função para calcular o custo do software com base no tipo, quantidade e matriz de informações
+function calculateSoftwareCost() {
+  var softwareId = document.getElementById('softwareType1').value;
+  quantidade = document.getElementById('softwareQuantity1').value;
+
+  const selectedSoftware = softwareTypes.find(item => item.type === softwareId);
+
+  if (selectedSoftware) {
+    const capexCost = selectedSoftware.cost * quantidade;
+    const opexCost = selectedSoftware.opex * quantidade;
+
+    const totalCapex = capexCost;
+    const totalOpex = opexCost;
+
+    return { capex: totalCapex, opex: totalOpex };
+  }
+
+  return { capex: 0, opex: 0 };
+}
+
+// Função para calcular o custo do servidor com base no tipo, quantidade e matriz de informações
+function calculateServerCost() {
+  var serverId = document.getElementById('serverType').value;
+  var serverQuantidade = document.getElementById('serverQuantity').value;
+
+  const selectedServer = serverTypes.find(item => item.type === serverId);
+
+  if (selectedServer) {
+    const capexCost = selectedServer.cost * serverQuantidade;
+    const opexCost = selectedServer.opex * serverQuantidade;
+
+    const totalCapex = capexCost;
+    const totalOpex = opexCost;
+
+    return { capex: totalCapex, opex: totalOpex };
+  }
+
+  return { capex: 0, opex: 0 };
+}
+
+// Função para atualizar o custo total
+function updateTotal() {
+  var totalCapex = 0;
+  var totalOpex = 0;
+
+  // Cálculo do software
+  var softwareId = document.getElementById('softwareType1').value;
+  quantidade = document.getElementById('softwareQuantity1').value;
+
+  const selectedSoftware = softwareTypes.find(item => item.type === softwareId);
+
+  if (selectedSoftware) {
+    const capexCost = selectedSoftware.cost * quantidade;
+    const opexCost = selectedSoftware.opex * quantidade;
+
+    totalCapex += capexCost;
+    totalOpex += opexCost;
+  }
+
+  // Cálculo do servidor
+  var serverId = document.getElementById('serverType').value;
+  var serverQuantidade = document.getElementById('serverQuantity').value;
+
+  const selectedServer = serverTypes.find(item => item.type === serverId);
+
+  if (selectedServer) {
+    const capexCost = selectedServer.cost * serverQuantidade;
+    const opexCost = selectedServer.opex * serverQuantidade;
+
+    totalCapex += capexCost;
+    totalOpex += opexCost;
+  }
+
+  // Cálculo de storage e volumetria
+  var totalVolumetria = parseInt(document.getElementById('totalVolumetria').value) || 0;
+  var totalStorage = parseInt(document.getElementById('totalStorage').value) || 0;
+
+  const storageCost = (totalVolumetria + totalStorage) * 0.05;
+
+  totalCapex += storageCost;
+  totalOpex += storageCost;
+
+  const totalFull = totalCapex + totalOpex;
+
+  // Atualização dos resultados na página
+  document.getElementById('result').textContent = `Custo Total: $${totalFull.toFixed(2)}`;
+  document.getElementById('capexResult').textContent = `Capex: $${totalCapex.toFixed(2)}`;
+  document.getElementById('opexResult').textContent = `Opex: $${totalOpex.toFixed(2)}`;
+}
+
+// Adiciona event listeners para todos os comboboxes e campos de quantidade de software
+document.querySelectorAll('select[id^="softwareType"]').forEach(function(el) {
+  el.addEventListener('change', updateTotal);
+});
+
+document.querySelectorAll('input[id^="softwareQuantity"]').forEach(function(el) {
+  el.addEventListener('change', updateTotal);
+});
+
+// Adiciona event listeners para todos os comboboxes e campos de quantidade de servidores
+document.querySelectorAll('select[id^="serverType"]').forEach(function(el) {
+  el.addEventListener('change', updateTotal);
+});
+
+document.querySelectorAll('input[id^="serverQuantity"]').forEach(function(el) {
+  el.addEventListener('change', updateTotal);
+});
+
+// Adiciona event listeners para os campos de storage e volumetria
+document.getElementById('totalVolumetria').addEventListener('change', updateTotal);
+document.getElementById('totalStorage').addEventListener('change', updateTotal);
+
+</script>
+
+
+</body>
+</html>

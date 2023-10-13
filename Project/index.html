@@ -1,72 +1,178 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Exemplo de Formulário</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+	body {
+	  font-family: Arial, sans-serif;
+	  background-color: #f4f4f4;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	  min-height: 100vh;
+	  margin: 0;
+	}
   
-	<title>Meu Formulário</title>
-	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<link rel="stylesheet" type="text/css" href="script.js">
-
+	.calculator-container {
+	  background: linear-gradient(to bottom, #87CEFA, #4da6ff);
+	  border-radius: 10px;
+	  padding: 20px;
+	  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	  width: 400px;
+	  text-align: left; /* Ajuste o alinhamento para a esquerda */
+	  color: white;
+	}
+  
+	.calculator h2 {
+	  margin-top: 0;
+	  color: white;
+	}
+  
+	.section {
+	  margin-bottom: 20px;
+	}
+  
+	label {
+	  display: block;
+	  margin-bottom: 5px;
+	  color: #ddd;
+	}
+  
+	select {
+	  width: 100%;
+	  padding: 8px;
+	  margin-bottom: 10px;
+	  border: 1px solid #ccc;
+	  border-radius: 4px;
+	  font-size: 16px;
+	}
+  
+	.half-width {
+	  width: calc(30% - 5px);
+	  padding: 5px;
+	  margin-bottom: 10px;
+	  border: 1px solid #ccc;
+	  border-radius: 4px;
+	}
+  
+	.quarter-width {
+	  width: 80%;
+	  padding: 8px;
+	  margin-bottom: 10px;
+	  border: 1px solid #ccc;
+	  border-radius: 4px;
+	  font-size: 16px;
+	}
+  
+	#result {
+	  font-size: 18px;
+	  font-weight: bold;
+	  margin-top: 10px;
+	}
+  </style>
+<title>Calculadora de Infraestrutura</title>
 </head>
 <body>
-	<div class="form-wrapper">
-		<h1>Projeto</h1>
-		<form>
-			<div class="form-group">
-				<label for="nome">Nome do Projeto:</label>
-				<input type="text" id="nome" name="nome" required>
-			</div>
+<div class="calculator-container">
+  <h1>Calculadora de Infraestrutura</h1>
 
-			<div class="form-group">
-				<label for="nome2">Lider do Projeto:</label>
-				<input type="text" id="nome2" name="nome2" required>
-			</div>
+  <div class="calculator">
+    <div class="section software">
+      <h3>Software</h3>
+      <select id="softwareType">
+        <option value="software1">Software 1</option>
+        <option value="software2">Software 2</option>
+        <option value="software3">Software 3</option>
+        <option value="software4">Software 4</option>
+      </select>
+      <input type="number" id="softwareQuantity" placeholder="Qtd" class="half-width">
+    </div>
 
-			<div class="form-group">
-				<label for="status">Status:</label>
-				<input type="text" id="status" name="status" required>
-			</div>
+    <div class="section server">
+      <h3>Servidor</h3>
+      <select id="serverType">
+        <option value="server1">Servidor 1</option>
+        <option value="server2">Servidor 2</option>
+        <option value="server3">Servidor 3</option>
+        <option value="server4">Servidor 4</option>
+        <option value="server5">Servidor 5</option>
+      </select>
+      <input type="number" id="serverQuantity" placeholder="Qtd" class="half-width">
+    </div>
 
-			<div class="form-group">
-				<label for="dono">Dono:</label>
-				<input type="text" id="dono" name="dono" required>
-			</div>
+    <div class="section volumetria">
+      <h3>Volumetria</h3>
+      <input type="number" id="totalVolumetria" placeholder="Total Volumetria (GB)" class="quarter-width">
+      <input type="number" id="totalStorage" placeholder="Total Storage (GB)" class="quarter-width">
+    </div>
 
-			<div class="form-group">
-				<label for="dono2">Dono2:</label>
-				<input type="text" id="dono2" name="dono2" required>
-			</div>
+    <div id="result">Custo Total: $0</div>
+    <div id="capexResult">Capex: $0</div>
+    <div id="opexResult">Opex: $0</div>
+  </div>
+</div>
 
-			<div class="form-group">
-				<label for="dono3">Dono3:</label>
-				<input type="text" id="dono3" name="dono3" required>
-			</div>
+<script>
+  // Definição das matrizes com informações sobre os tipos e custos
+  const softwareTypes = [
+    { type: 'software1', cost: 10, opex: 3 },
+    { type: 'software2', cost: 15, opex: 2 },
+    { type: 'software3', cost: 20, opex: 4 },
+    { type: 'software4', cost: 25, opex: 6 }
+  ];
 
-			<div class="form-group">
-				<label for="infra">Tipo de infra:</label>
-					<input type="radio" id="cloud" name="infra" value="cloud" onchange="showTipoInfra()">
-					<label for="cloud">Cloud</label>
-					<input type="radio" id="onpremisses" name="infra" value="onpremisses" onchange="showTipoInfra()">
-					<label for="onpremisses">On-Premisses</label>
-			</div>
-			<div id="camposOpcao1" class="campos-adicionais">
-				<div class="form-group">
-				  <label for="multiselect">Selecione:</label>
-				  <select multiple id="multiselect" name="multiselect">
-					<option value="saas">saas</option>
-					<option value="paas">paas</option>
-				  </select>
-				</div>
-			  </div>
-			<div class="form-group">
-				<label for="mensagem">Descreva: </label>
-				<textarea id="mensagem" name="mensagem" required></textarea>
-			</div>
+  const serverTypes = [
+    { type: 'server1', cost: 100, opex: 2 },
+    { type: 'server2', cost: 150, opex: 3 },
+    { type: 'server3', cost: 200, opex: 4 },
+    { type: 'server4', cost: 250, opex: 5 },
+    { type: 'server5', cost: 300, opex: 7 }
+  ];
 
-			<input id="enviar" type="submit" value="Enviar">
-		</form>
-	</div>
+  // Obtém referências aos elementos do HTML
+  const softwareType = document.getElementById('softwareType');
+  const softwareQuantity = document.getElementById('softwareQuantity');
+  const serverType = document.getElementById('serverType');
+  const serverQuantity = document.getElementById('serverQuantity');
+  const totalVolumetria = document.getElementById('totalVolumetria');
+  const totalStorage = document.getElementById('totalStorage');
+  const result = document.getElementById('result');
+
+  // Adiciona um ouvinte de evento 'input' para cada elemento
+  [softwareType, softwareQuantity, serverType, serverQuantity, totalVolumetria, totalStorage].forEach(element => {
+    element.addEventListener('input', updateTotal);
+  });
+
+  // Função para atualizar o custo total
+  function updateTotal() {
+  const softwareCost = calculateCost(softwareType.value, softwareQuantity.value, softwareTypes);
+  const serverCost = calculateCost(serverType.value, serverQuantity.value, serverTypes);
+  const volumetriaValue = totalVolumetria.value ? parseInt(totalVolumetria.value) : 0;
+  const storageValue = totalStorage.value ? parseInt(totalStorage.value) : 0;
+  const storageCost = (volumetriaValue + storageValue) * 0.05;
+
+  const totalCapex = softwareCost.capex + serverCost.capex + storageCost;
+  const totalOpex = softwareCost.opex + serverCost.opex;
+  const totalfull = totalCapex + totalOpex;
+
+  result.textContent = `Custo Total: $${totalfull.toFixed(2)}`;
+  capexResult.textContent = `Capex: $${totalCapex.toFixed(2)}`;
+  opexResult.textContent = `Opex: $${totalOpex.toFixed(2)}`;
+}
+
+  // Função para calcular o custo com base no tipo, quantidade e matriz de informações
+  function calculateCost(type, quantity, costArray) {
+  const selectedType = costArray.find(item => item.type === type);
+  const selectedQuantity = quantity ? parseInt(quantity) : 0;
+
+  const capexCost = selectedType ? selectedType.cost * selectedQuantity : 0;
+  const opexCost = selectedType ? selectedType.opex * selectedQuantity : 0;
+
+  return { capex: capexCost, opex: opexCost };
+}
+</script>
+
+
 </body>
 </html>
-
