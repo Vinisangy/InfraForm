@@ -115,7 +115,9 @@
 
 <script>
 
-// Definição das matrizes com informações sobre os tipos e custos de software
+var quantidade = 0;
+
+// Definição de tipos de software com seus custos
 const softwareTypes = [
   { type: 'software1', cost: 10, opex: 3 },
   { type: 'software2', cost: 15, opex: 2 },
@@ -123,7 +125,7 @@ const softwareTypes = [
   { type: 'software4', cost: 25, opex: 6 }
 ];
 
-// Definição das matrizes com informações sobre os tipos e custos de servidor
+// Definição de tipos de servidor com seus custos
 const serverTypes = [
   { type: 'server1', cost: 100, opex: 2 },
   { type: 'server2', cost: 150, opex: 3 },
@@ -132,10 +134,10 @@ const serverTypes = [
   { type: 'server5', cost: 300, opex: 7 }
 ];
 
-// Função para calcular o custo do software com base no tipo, quantidade e matriz de informações
-function calculateSoftwareCost() {
-  var softwareId = document.getElementById('softwareType1').value;
-  quantidade = document.getElementById('softwareQuantity1').value;
+// Função para calcular o custo do software com base no tipo e quantidade
+function calculateSoftwareCost(el) {
+  var softwareId = el.value;
+  quantidade = document.getElementById(`softwareQuantity${el.id.match(/\d+/)[0]}`).value;
 
   const selectedSoftware = softwareTypes.find(item => item.type === softwareId);
 
@@ -143,19 +145,16 @@ function calculateSoftwareCost() {
     const capexCost = selectedSoftware.cost * quantidade;
     const opexCost = selectedSoftware.opex * quantidade;
 
-    const totalCapex = capexCost;
-    const totalOpex = opexCost;
-
-    return { capex: totalCapex, opex: totalOpex };
+    return { capex: capexCost, opex: opexCost };
   }
 
   return { capex: 0, opex: 0 };
 }
 
-// Função para calcular o custo do servidor com base no tipo, quantidade e matriz de informações
-function calculateServerCost() {
-  var serverId = document.getElementById('serverType').value;
-  var serverQuantidade = document.getElementById('serverQuantity').value;
+// Função para calcular o custo do servidor com base no tipo e quantidade
+function calculateServerCost(el) {
+  var serverId = el.value;
+  var serverQuantidade = document.getElementById(`serverQuantity${el.id.match(/\d+/)[0]}`).value;
 
   const selectedServer = serverTypes.find(item => item.type === serverId);
 
@@ -163,10 +162,7 @@ function calculateServerCost() {
     const capexCost = selectedServer.cost * serverQuantidade;
     const opexCost = selectedServer.opex * serverQuantidade;
 
-    const totalCapex = capexCost;
-    const totalOpex = opexCost;
-
-    return { capex: totalCapex, opex: totalOpex };
+    return { capex: capexCost, opex: opexCost };
   }
 
   return { capex: 0, opex: 0 };
@@ -177,35 +173,30 @@ function updateTotal() {
   var totalCapex = 0;
   var totalOpex = 0;
 
-  // Cálculo do software
-  var softwareId = document.getElementById('softwareType1').value;
-  quantidade = document.getElementById('softwareQuantity1').value;
+  document.querySelectorAll('select[id^="softwareType"]').forEach(function(el) {
+    const softwareCost = calculateSoftwareCost(el);
+    totalCapex += softwareCost.capex;
+    totalOpex += softwareCost.opex;
+  });
 
-  const selectedSoftware = softwareTypes.find(item => item.type === softwareId);
+  document.querySelectorAll('input[id^="softwareQuantity"]').forEach(function(el) {
+    const softwareCost = calculateSoftwareCost(el);
+    totalCapex += softwareCost.capex;
+    totalOpex += softwareCost.opex;
+  });
 
-  if (selectedSoftware) {
-    const capexCost = selectedSoftware.cost * quantidade;
-    const opexCost = selectedSoftware.opex * quantidade;
+  document.querySelectorAll('select[id^="serverType"]').forEach(function(el) {
+    const serverCost = calculateServerCost(el);
+    totalCapex += serverCost.capex;
+    totalOpex += serverCost.opex;
+  });
 
-    totalCapex += capexCost;
-    totalOpex += opexCost;
-  }
+  document.querySelectorAll('input[id^="serverQuantity"]').forEach(function(el) {
+    const serverCost = calculateServerCost(el);
+    totalCapex += serverCost.capex;
+    totalOpex += serverCost.opex;
+  });
 
-  // Cálculo do servidor
-  var serverId = document.getElementById('serverType').value;
-  var serverQuantidade = document.getElementById('serverQuantity').value;
-
-  const selectedServer = serverTypes.find(item => item.type === serverId);
-
-  if (selectedServer) {
-    const capexCost = selectedServer.cost * serverQuantidade;
-    const opexCost = selectedServer.opex * serverQuantidade;
-
-    totalCapex += capexCost;
-    totalOpex += opexCost;
-  }
-
-  // Cálculo de storage e volumetria
   var totalVolumetria = parseInt(document.getElementById('totalVolumetria').value) || 0;
   var totalStorage = parseInt(document.getElementById('totalStorage').value) || 0;
 
@@ -216,7 +207,6 @@ function updateTotal() {
 
   const totalFull = totalCapex + totalOpex;
 
-  // Atualização dos resultados na página
   document.getElementById('result').textContent = `Custo Total: $${totalFull.toFixed(2)}`;
   document.getElementById('capexResult').textContent = `Capex: $${totalCapex.toFixed(2)}`;
   document.getElementById('opexResult').textContent = `Opex: $${totalOpex.toFixed(2)}`;
@@ -224,20 +214,32 @@ function updateTotal() {
 
 // Adiciona event listeners para todos os comboboxes e campos de quantidade de software
 document.querySelectorAll('select[id^="softwareType"]').forEach(function(el) {
-  el.addEventListener('change', updateTotal);
+  el.addEventListener('change', function() {
+    calculateSoftwareCost(el);
+    updateTotal();
+  });
 });
 
 document.querySelectorAll('input[id^="softwareQuantity"]').forEach(function(el) {
-  el.addEventListener('change', updateTotal);
+  el.addEventListener('change', function() {
+    calculateSoftwareCost(el);
+    updateTotal();
+  });
 });
 
 // Adiciona event listeners para todos os comboboxes e campos de quantidade de servidores
 document.querySelectorAll('select[id^="serverType"]').forEach(function(el) {
-  el.addEventListener('change', updateTotal);
+  el.addEventListener('change', function() {
+    calculateServerCost(el);
+    updateTotal();
+  });
 });
 
 document.querySelectorAll('input[id^="serverQuantity"]').forEach(function(el) {
-  el.addEventListener('change', updateTotal);
+  el.addEventListener('change', function() {
+    calculateServerCost(el);
+    updateTotal();
+  });
 });
 
 // Adiciona event listeners para os campos de storage e volumetria

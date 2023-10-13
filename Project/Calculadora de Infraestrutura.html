@@ -87,18 +87,35 @@
         <option value="software4">Software 4</option>
       </select>
       <input type="number" id="softwareQuantity1" placeholder="Qtd" class="half-width">
+
+      <select id="softwareType2">
+        <option value="software1">Software 1</option>
+        <option value="software2">Software 2</option>
+        <option value="software3">Software 3</option>
+        <option value="software4">Software 4</option>
+      </select>
+      <input type="number" id="softwareQuantity2" placeholder="Qtd" class="half-width">
     </div>
 
     <div class="section server">
       <h3>Servidor</h3>
-      <select id="serverType">
+      <select id="serverType1">
         <option value="server1">Servidor 1</option>
         <option value="server2">Servidor 2</option>
         <option value="server3">Servidor 3</option>
         <option value="server4">Servidor 4</option>
         <option value="server5">Servidor 5</option>
       </select>
-      <input type="number" id="serverQuantity" placeholder="Qtd" class="half-width">
+      <input type="number" id="serverQuantity1" placeholder="Qtd" class="half-width">
+
+      <select id="serverType2">
+        <option value="server1">Servidor 1</option>
+        <option value="server2">Servidor 2</option>
+        <option value="server3">Servidor 3</option>
+        <option value="server4">Servidor 4</option>
+        <option value="server5">Servidor 5</option>
+      </select>
+      <input type="number" id="serverQuantity2" placeholder="Qtd" class="half-width">
     </div>
 
     <div class="section volumetria">
@@ -135,11 +152,11 @@ const serverTypes = [
 ];
 
 // Função para calcular o custo do software com base no tipo e quantidade
-function calculateSoftwareCost() {
-  var softwareId = document.getElementById('softwareType1').value;
-  quantidade = document.getElementById('softwareQuantity1').value;
+function calculateSoftwareCost(num) {
+  var softwareId = document.getElementById(`softwareType${num}`).value;
+  quantidade = document.getElementById(`softwareQuantity${num}`).value;
 
-  const selectedSoftware = softwareTypes.find(item => item.type === softwareId); // Procura o tipo de software na lista
+  const selectedSoftware = softwareTypes.find(item => item.type === softwareId);
 
   if (selectedSoftware) {
     const capexCost = selectedSoftware.cost * quantidade;
@@ -152,9 +169,9 @@ function calculateSoftwareCost() {
 }
 
 // Função para calcular o custo do servidor com base no tipo e quantidade
-function calculateServerCost() {
-  var serverId = document.getElementById('serverType').value;
-  var serverQuantidade = document.getElementById('serverQuantity').value;
+function calculateServerCost(num) {
+  var serverId = document.getElementById(`serverType${num}`).value;
+  var serverQuantidade = document.getElementById(`serverQuantity${num}`).value;
 
   const selectedServer = serverTypes.find(item => item.type === serverId);
 
@@ -173,13 +190,21 @@ function updateTotal() {
   var totalCapex = 0;
   var totalOpex = 0;
 
-  const softwareCost = calculateSoftwareCost();
-  totalCapex += softwareCost.capex;
-  totalOpex += softwareCost.opex;
+  // Loop para calcular os custos de software
+  document.querySelectorAll('select[id^="softwareType"]').forEach(function(el) {
+    const num = el.id.match(/\d+/)[0];
+    const softwareCost = calculateSoftwareCost(num);
+    totalCapex += softwareCost.capex;
+    totalOpex += softwareCost.opex;
+  });
 
-  const serverCost = calculateServerCost();
-  totalCapex += serverCost.capex;
-  totalOpex += serverCost.opex;
+  // Loop para calcular os custos de servidor
+  document.querySelectorAll('select[id^="serverType"]').forEach(function(el) {
+    const num = el.id.match(/\d+/)[0];
+    const serverCost = calculateServerCost(num);
+    totalCapex += serverCost.capex;
+    totalOpex += serverCost.opex;
+  });
 
   var totalVolumetria = parseInt(document.getElementById('totalVolumetria').value) || 0;
   var totalStorage = parseInt(document.getElementById('totalStorage').value) || 0;
@@ -217,7 +242,6 @@ document.querySelectorAll('input[id^="serverQuantity"]').forEach(function(el) {
 // Adiciona event listeners para os campos de storage e volumetria
 document.getElementById('totalVolumetria').addEventListener('change', updateTotal);
 document.getElementById('totalStorage').addEventListener('change', updateTotal);
-
 
 </script>
 
