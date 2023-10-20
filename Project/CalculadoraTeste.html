@@ -15,13 +15,14 @@
 	}
   
 	.calculator-container {
-	  background: linear-gradient(to bottom, #87CEFA, #4da6ff);
-	  border-radius: 10px;
+    background: radial-gradient(circle, #f0f0f0, #ecf6ff, #d2dcff, #b8d2ff, #9ec8ff, #87CEFA);
+    border-radius: 20px;
 	  padding: 20px;
 	  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	  width: 400px;
 	  text-align: left; /* Ajuste o alinhamento para a esquerda */
 	  color: white;
+    
 	}
   
 	.calculator h2 {
@@ -70,6 +71,35 @@
 	  font-weight: bold;
 	  margin-top: 10px;
 	}
+
+  .tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 150px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -75px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
   </style>
 <title>Calculadora de Infraestrutura</title>
 </head>
@@ -94,7 +124,7 @@
       <select id="serverType">
         <option value="server1">Servidor 1</option>
         <option value="server2">Servidor 2</option>
-        <option value="server3">Servidor 3</option>
+        <option value="server3">Servidor 3</option> 
         <option value="server4">Servidor 4</option>
         <option value="server5">Servidor 5</option>
       </select>
@@ -114,6 +144,18 @@
 </div>
 
 <script>
+
+ // Encontra o elemento <h3> que deseja modificar (por exemplo, o segundo <h3> na página)
+var elementoH3 = document.querySelectorAll('h3')[1]; // Este exemplo seleciona o segundo <h3>
+
+// Cria um novo elemento span para o tooltip
+var spanTooltip = document.createElement('span');
+spanTooltip.classList.add('tooltip');
+spanTooltip.innerHTML = 'ℹ️<span class="tooltiptext">Informações adicionais sobre o servidor.</span>';
+
+// Substitui o conteúdo do <h3>
+elementoH3.innerHTML = 'Servidor ';
+elementoH3.appendChild(spanTooltip);
 
 var quantidade = 0;
 
@@ -245,6 +287,8 @@ document.querySelectorAll('input[id^="serverQuantity"]').forEach(function(el) {
 // Adiciona event listeners para os campos de storage e volumetria
 document.getElementById('totalVolumetria').addEventListener('change', updateTotal);
 document.getElementById('totalStorage').addEventListener('change', updateTotal);
+
+
 
 </script>
 
